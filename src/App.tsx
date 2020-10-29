@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import GoogleLogin from 'react-google-login';
+import { AppBar,  CssBaseline,  Hidden, makeStyles, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
+import NetworkDetector from './NetworkDetector';
+import PropTypes from 'prop-types';
+import Profile from './profile/Profile';
+import Main from './views/Main';
+import { BrowserRouter } from 'react-router-dom';
 import User from "./services/user.service";
-import { AppBar, Container, Grid, Hidden, makeStyles, Toolbar, Typography } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(0),
   },
   title: {
-    flexGrow: 3,
+    flexGrow: 1,
   },
   logo: {
     width: "60px"
@@ -25,95 +28,62 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ButtonAppBar() {
-  const classes = useStyles();
+function ElevationScroll(props: any) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: window ? window() : undefined,
+  });
 
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+  });
+}
+
+ElevationScroll.propTypes = {
+  children: PropTypes.element.isRequired,
+  window: PropTypes.func,
+};
+
+function ButtonAppBar(props: any) {
+  const classes = useStyles();
   return (
-    <AppBar position="static" color={"transparent"} className={classes.appbar} >
-      <Toolbar >
-        <Hidden smDown>
-          <Typography variant="h6" className={classes.title}>
-            App
-          </Typography>
-        </Hidden>
-        <img src={logo} className={classes.logo} alt="logo" />
-        {/* <Button color="inherit">Login</Button> */}
-      </Toolbar>
-    </AppBar>
+    <React.Fragment>
+      <CssBaseline />
+      <ElevationScroll {...props}>
+        <AppBar>
+          <Toolbar >
+              <Typography variant="h6" className={classes.title}>{"App "}
+                <Typography variant="caption" gutterBottom>{process.env.REACT_APP_VERSION}</Typography>
+              </Typography>
+            {props.logged? <Profile logout={props.logout} /> : null }
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
+    </React.Fragment>
   );
 }
 
 
 function App() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
-  const [givenName, setGivenName] = useState("");
-  const [familyName, setFamilyName] = useState("");
-  const [email, setEmail] = useState("");
-  const [picture, setPicture] = useState("");
-
-
-  const handleLoadUserMe = () => {
-    User.usersMe().then(res => {
-      setGivenName(res.data.given_name);
-      setFamilyName(res.data.family_name);
-      setEmail(res.data.email);
-      setPicture(res.data.picture);
-    }).catch(e => {
-      User.catchErrors(e);
-    })
+  const [logged,setLogged] = useState(User.loggedIn())
+  const loadProfile = () => {
+    setLogged(true);
   }
-  const responseGoogle = (response: any) => {
-    console.log(response);
-    User.googleLogin(response.tokenId).then(res => {
-      User.saveSession(res.data.access_token, res.data.date_expires, res.data.expires)
-      enqueueSnackbar("Login App", {
-        variant: 'success',
-      });
-      handleLoadUserMe();
-    }).catch(e => {
-      User.catchErrors(e);
-    })
+  const logout = () => {
+    setLogged(false);
   }
-  const responseGoogleFail = (response: any) => {
-    console.log(response)
-    enqueueSnackbar(response.error, {
-      variant: 'error',
-    });
-
-  }
-  handleLoadUserMe();
   return (
     <div className="App">
-      <ButtonAppBar></ButtonAppBar>
-      <br></br>
-      <Container fixed >
-        <Grid container spacing={0} alignItems="center" justify="center" direction="column" alignContent="center">
-          <Grid item>
-
-            <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ""} //id gotten from Google
-              buttonText="Login Google Account"
-              onSuccess={responseGoogle}
-              onFailure={responseGoogleFail}
-            />
-
-          </Grid>
-          <Grid item>
-            <Typography>{givenName}</Typography>
-            <Typography>{familyName}</Typography>
-            <Typography>{email}</Typography>
-            <img src={picture} />
-          </Grid>
-          <Grid item>
-            <p>
-              {process.env.REACT_APP_VERSION}
-            </p>
-          </Grid>
-        </Grid>
-      </Container>
-    </div>
+      <BrowserRouter>
+        <ButtonAppBar logged={logged} logout={logout} />
+        <Toolbar />
+        <Main reloadProfile={loadProfile}/>
+      </BrowserRouter>
+    </div >
   );
 }
 
-export default App;
+
+export default NetworkDetector(App);

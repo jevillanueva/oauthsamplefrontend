@@ -30,6 +30,24 @@ class User {
       _id: ""
     }
   }
+
+  loggedIn(){
+    var token = localStorage.getItem('currentUserToken');
+    var expires = localStorage.getItem('currentUserExpires');
+    if (expires === null || expires === undefined ){
+      return false;
+    }else{
+      var expireDate = Date.parse(expires)
+      expireDate = expireDate - (new Date().getTimezoneOffset() * 60000)
+      if (Date.now() <= expireDate) {
+        return true;
+      }else{
+        this.clearSession();
+        return false;
+      }
+    }
+  }
+
   config(params?: any, bearer: boolean = false, contentType = "application/json", aditionalConfig?: any, callback?: any) {
     var defaultConf: any = {
       headers: {
