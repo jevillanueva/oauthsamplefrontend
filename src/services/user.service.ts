@@ -1,14 +1,34 @@
 import http from "../http-common";
 class User {
   googleLogin(data: any) {
-    return http.post("/api/google/auth/client",data, this.config());
+    return http.post("/api/google/auth/client", data, this.config());
   }
   logout() {
     return http.post("/api/logout", {}, this.config());
   }
+  usersMe() {
+    return http.get("/api/users/me", this.config())
+  }
+  saveSession(token: string,expires: string, seconds: number) {
+    localStorage.setItem('currentUserToken', token);
+    localStorage.setItem('currentUserExpires', expires);
+    localStorage.setItem('currentUserExpiresSeconds', seconds.toString());
+  }
   clearSession() {
     localStorage.removeItem("currentUserToken");
     localStorage.removeItem("currentUserExpires");
+    localStorage.removeItem("currentUserExpiresSeconds");
+  }
+  defaultUser(){
+    return {
+      disabled: false,
+      email: "",
+      family_name: "",
+      given_name: "",
+      picture: "",
+      username: "",
+      _id: ""
+    }
   }
   config(params?: any, bearer: boolean = false, contentType = "application/json", aditionalConfig?: any, callback?: any) {
     var defaultConf: any = {
