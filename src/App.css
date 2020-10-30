@@ -1,3 +1,7 @@
+.App {
+  text-align: center;
+}
+
 .internet-error {
   position: fixed;
   bottom: 0;
@@ -15,4 +19,9 @@
   letter-spacing: 0.0075em;
   margin: 0;
   color: white
+}
+
+.presentation {
+  width: 35%;
+  height: auto;
 }

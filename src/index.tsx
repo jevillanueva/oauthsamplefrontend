@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { SnackbarProvider } from 'notistack'
 ReactDOM.render(
   <React.StrictMode>
-    <SnackbarProvider maxSnack={3}>
+    <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
       <App />
     </SnackbarProvider>
   </React.StrictMode>,

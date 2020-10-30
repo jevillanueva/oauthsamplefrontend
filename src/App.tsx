@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
+import logo from './assets/img/logo.svg';
 import './App.css';
 import { AppBar,  CssBaseline,  Hidden, makeStyles, Toolbar, Typography, useScrollTrigger } from '@material-ui/core';
 import NetworkDetector from './NetworkDetector';
@@ -8,6 +8,7 @@ import Profile from './profile/Profile';
 import Main from './views/Main';
 import { BrowserRouter } from 'react-router-dom';
 import User from "./services/user.service";
+import Control from './profile/Control';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -17,9 +18,10 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    textAlign: "center"
   },
   logo: {
-    width: "60px"
+    width: "42px"
   },
   appbar: {
     [theme.breakpoints.down('sm')]: {
@@ -54,10 +56,12 @@ function ButtonAppBar(props: any) {
       <ElevationScroll {...props}>
         <AppBar>
           <Toolbar >
-              <Typography variant="h6" className={classes.title}>{"App "}
-                <Typography variant="caption" gutterBottom>{process.env.REACT_APP_VERSION}</Typography>
+              <img src={logo} className={classes.logo} alt="logo" />
+              <Typography variant="h6" className={classes.title} >{"App "}
+                <Typography variant="overline" >{process.env.REACT_APP_VERSION}</Typography>
               </Typography>
-            {props.logged? <Profile logout={props.logout} /> : null }
+            {props.logged? <Profile logout={props.logout}/> : null }
+            <Control />
           </Toolbar>
         </AppBar>
       </ElevationScroll>

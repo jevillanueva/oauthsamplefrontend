@@ -1,7 +1,7 @@
-import { Avatar,  Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Menu, MenuItem, Typography } from '@material-ui/core';
+import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Menu, MenuItem, Typography } from '@material-ui/core';
 import React from 'react';
 import User from "./../services/user.service";
-import { withSnackbar  } from 'notistack';
+import { withSnackbar } from 'notistack';
 import { Redirect } from 'react-router-dom';
 
 type MyUser = {
@@ -16,9 +16,12 @@ class Profile extends React.Component<any, MyUser> {
     super(props)
     this.state = {
       user: User.defaultUser(),
-      redirect : false,
+      redirect: false,
       next: "/"
     };
+
+  }
+  componentDidMount() {
     this.handleReloadProfile();
   }
   handleReloadProfile = () => {
@@ -34,9 +37,9 @@ class Profile extends React.Component<any, MyUser> {
       this.setState({ user: User.defaultUser() })
       User.clearSession();
       this.props.enqueueSnackbar(res.data.message, {
-        variant: res.data.code=== 1 ? 'success' :'error',
+        variant: res.data.code === 1 ? 'success' : 'error',
       });
-      this.setState({redirect: true});
+      this.setState({ redirect: true });
       this.props.logout();
     }).catch(e => {
       User.catchErrors(e);
@@ -49,10 +52,15 @@ class Profile extends React.Component<any, MyUser> {
     this.setState({ anchorEl: null })
   }
   render() {
+    if (!User.loggedIn()){
+      return (
+        <Redirect push to={this.state.next} />
+      )
+    }
     return (
       <React.Fragment>
-        <IconButton aria-controls="simple-menu" aria-haspopup="true" disabled={this.state.user.email === ""} >
-          <Avatar alt={this.state.user.given_name} src={this.state.user.picture} onClick={this.openProfile}/>
+        <IconButton aria-controls="simple-menu" aria-haspopup="true" disabled={this.state.user.email === ""} onClick={this.openProfile}>
+          <Avatar alt={this.state.user.given_name} src={this.state.user.picture} />
         </IconButton>
         <Menu
           id="simple-menu"
@@ -62,32 +70,28 @@ class Profile extends React.Component<any, MyUser> {
           onClose={this.closeProfile}
         >
           <MenuItem>
-            <List >
-              <ListItem alignItems="flex-start" >
-                <ListItemAvatar>
-                  <Avatar alt={this.state.user.given_name} src={this.state.user.picture} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={this.state.user.email}
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="textPrimary"
-                      >
-                        {`${this.state.user.given_name} ${this.state.user.family_name}` }
-              </Typography>
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
-            </List>
-            <Divider variant="inset" component="li" />
+            <ListItemAvatar>
+              <Avatar alt={this.state.user.given_name} src={this.state.user.picture} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={this.state.user.email}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="textPrimary"
+                  >
+                    {`${this.state.user.given_name} ${this.state.user.family_name}`}
+                  </Typography>
+                </React.Fragment>
+              }
+            />
           </MenuItem>
+          <Divider variant="middle" component="li" />
           <MenuItem onClick={this.handleLogout}>Salir</MenuItem>
         </Menu>
-        {this.state.redirect ? <Redirect push to={this.state.next} /> : null} 
+        {this.state.redirect ? <Redirect push to={this.state.next} /> : null}
       </React.Fragment>
     )
   }
