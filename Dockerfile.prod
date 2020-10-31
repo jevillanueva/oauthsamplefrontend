@@ -1,5 +1,10 @@
 FROM node:13.11-alpine AS builder
 LABEL MAINTAINER="Jonathan Villanueva frik_ej2v@hotmail.com"
+
+ARG GOOGLE_CLIENT_ID=default
+ENV GOOGLE_CLIENT_ID $GOOGLE_CLIENT_ID
+
+
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --silent

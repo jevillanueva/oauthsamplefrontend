@@ -1,19 +1,15 @@
 # Basic Auth y OAuth2 Google UI
-Adicionar las variables de entorno al sistema descritas en el archivo [env](./.env)
-```sh
-# ADICIONAR EL ID PARA COMPILAR EL FRONTEND
-REACT_APP_GOOGLE_CLIENT_ID=ID_APP
-```
-Es necesario adicionar el cliente de Google Antes de Compilar la aplicacion de React para que sea remplazada al momento de compilar por el valor de
-la variable de entorno.
-
-En caso de utilizar docker-compose para compilar la imagen adicionar la variable 
-```sh
-GOOGLE_CLIENT_ID=ID_APP
+Adicionar antes de compilar la variable de entorno con el id de la app de Google
+En caso de utilizar docker-compose para compilar la imagen adicionar el argumento
+```yaml
+...
+  args:
+    - GOOGLE_CLIENT_ID=ID_APP
+...
 ```
 ## Para crear la imagen de Docker Compilada React y ejecutar
 ```sh
-$ docker build . -f Dockerfile.prod -t jv/fastapioauthui
+$ docker build . --build-arg GOOGLE_CLIENT_ID=APP_ID -f Dockerfile.prod -t jv/fastapioauthui
 ```
 Para ejecutar 
 ```sh
@@ -23,7 +19,7 @@ $ docker run -p 80:80 jv/fastapioauthui
 ## Para crear la imagen de Docker En modo de desarrollo  de React y ejecutar
 
 ```sh
-$ docker build . -f Dockerfile.dev -t jv/fastapioauthui
+$ docker build . --build-arg GOOGLE_CLIENT_ID=APP_ID -f Dockerfile.dev -t jv/fastapioauthui
 ```
 Para ejecutar 
 ```sh

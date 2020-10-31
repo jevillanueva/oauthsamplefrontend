@@ -1,6 +1,10 @@
 # pull official base image
 FROM node:13.11-alpine
 
+
+ARG GOOGLE_CLIENT_ID=default
+ENV GOOGLE_CLIENT_ID $GOOGLE_CLIENT_ID
+
 # set working directory
 WORKDIR /app
 
