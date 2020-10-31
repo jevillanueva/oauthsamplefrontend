@@ -21,6 +21,7 @@ $ docker run -p 80:80 jv/fastapioauthui
 ```
 
 ## Para crear la imagen de Docker En modo de desarrollo  de React y ejecutar
+
 ```sh
 $ docker build . -f Dockerfile.dev -t jv/fastapioauthui
 ```
@@ -28,7 +29,14 @@ Para ejecutar
 ```sh
 $ docker run  -p 3000:3000 jv/fastapioauthui
 ```
+Para probar conjuntamente con el api en desarrollo desde dos rutas distintas utilizar el proxy en el package.json
+```js
+{
+  ...,
+  "proxy": "http://localhost:8000"
+}
 
+```
 
 
 
