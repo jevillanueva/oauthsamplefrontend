@@ -56,7 +56,9 @@ function ButtonAppBar(props: any) {
       <ElevationScroll {...props}>
         <AppBar>
           <Toolbar >
+              <Hidden smDown>
               <img src={logo} className={classes.logo} alt="logo" />
+              </Hidden>
               <Typography variant="h6" className={classes.title} >{"App "}
                 <Typography variant="overline" >{process.env.REACT_APP_VERSION}</Typography>
               </Typography>

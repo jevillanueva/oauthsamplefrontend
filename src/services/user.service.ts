@@ -110,7 +110,7 @@ class User {
       if (callback)
         callback();
       if (e.response.status === 403 || e.response.status === 401) {
-        this.logout();
+        this.clearSession();
       }
     } catch (error) {
       console.log(e)

@@ -1,4 +1,4 @@
-import { Avatar, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Menu, MenuItem, Typography } from '@material-ui/core';
+import { Avatar, Divider, IconButton,   ListItemAvatar, ListItemText, Menu, MenuItem, Typography } from '@material-ui/core';
 import React from 'react';
 import User from "./../services/user.service";
 import { withSnackbar } from 'notistack';
